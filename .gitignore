@@ -4,6 +4,7 @@ __pycache__/
 .coverage
 htmlcov/
 .claude/
+data/*.db
 *.pyc
 *.pyo
 *.pyd
