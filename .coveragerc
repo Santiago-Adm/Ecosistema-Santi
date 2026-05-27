@@ -1,0 +1,13 @@
+[run]
+source = ecosistema_santi
+omit =
+    */ecosistema_santi/cli.py
+    */ecosistema_santi/__main__.py
+    */ecosistema_santi/web/__init__.py
+    */ecosistema_santi/web/__main__.py
+    */ecosistema_santi/web/app.py
+    */ecosistema_santi/web/handler.py
+    */ecosistema_santi/web/ui/*
+
+[report]
+show_missing = true
