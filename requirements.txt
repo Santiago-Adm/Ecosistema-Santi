@@ -1,2 +1,4 @@
 pytest
 pytest-cov
+testcontainers[postgresql]
+psycopg2-binary
