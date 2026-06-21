@@ -6,8 +6,8 @@ from psycopg2.extensions import connection as PgConnection
 from datetime import datetime
 import uuid
 
-from src.ecosistema_santi.domain.consulta import ConsultaAtencion
-from src.ecosistema_santi.persistence.postgres_connection import create_connection, ensure_schema
+from ecosistema_santi.domain.consulta import ConsultaAtencion
+from ecosistema_santi.persistence.postgres_connection import create_connection, ensure_schema
 
 # Definir un repositorio para las pruebas contra PostgreSQL
 # Esto se mantiene dentro del ámbito de las pruebas y no afecta el código de producción.
