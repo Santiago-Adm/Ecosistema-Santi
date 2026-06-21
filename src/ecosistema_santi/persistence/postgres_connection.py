@@ -1,5 +1,6 @@
 import psycopg2
 from psycopg2.extensions import connection as PgConnection
+from urllib.parse import urlparse
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS consultas (
@@ -34,7 +35,14 @@ CREATE TABLE IF NOT EXISTS respuestas_operativas (
 
 
 def create_connection(db_url: str) -> PgConnection:
-    conn = psycopg2.connect(db_url)
+    parsed_url = urlparse(db_url)
+    conn = psycopg2.connect(
+        host=parsed_url.hostname,
+        port=parsed_url.port,
+        user=parsed_url.username,
+        password=parsed_url.password,
+        dbname=parsed_url.path.lstrip("/"),
+    )
     conn.autocommit = False # Usamos commits explícitos como en SQLite
     return conn
 
