@@ -9,3 +9,6 @@ data/*.db
 *.pyo
 *.pyd
 .DS_Store
+.aider*
+SUB_EXPERIMENTO_TESTCONTAINERS.md
+tests

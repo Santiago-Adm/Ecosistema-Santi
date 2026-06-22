@@ -1,262 +1,54 @@
-# Estrategia de pruebas
-
-## Propósito del documento
-
-Este documento define la estrategia de validación del sistema para el experimento de desarrollo. Su finalidad es establecer cómo se comprobará que la solución construida responde al comportamiento esperado, mantiene calidad técnica suficiente y puede evolucionar con confianza dentro del alcance delimitado del proyecto.
-
-Este archivo pertenece a la capa de validación y calidad y actúa como contrato de pruebas para backend, integraciones controladas y flujos funcionales críticos. No describe todavía cada caso de prueba individual, sino el enfoque general, los niveles de validación, las reglas de cobertura, el uso de mocks y los criterios mínimos de evidencia.
-
-## Alcance de la estrategia de pruebas
-
-La estrategia de pruebas del proyecto se concentrará principalmente en el backend, ya que este constituye el núcleo principal de validación del experimento. El objetivo es demostrar que la lógica crítica del sistema puede construirse con buena calidad, bajo control técnico y con alto nivel de verificación.
-
-El alcance incluye:
-
-- pruebas unitarias sobre lógica de negocio y servicios;
-- pruebas de integración sobre persistencia y flujos clave;
-- validación de criterios de aceptación mediante escenarios funcionales;
-- uso controlado de mocks y dobles de prueba;
-- medición de cobertura en módulos críticos;
-- y evidencia suficiente para sostener la viabilidad del flujo TDD-BDD-SDD.
-
-Quedan fuera de esta etapa una estrategia exhaustiva de pruebas E2E de interfaz, automatización avanzada de UI o validación de integraciones externas reales no incluidas en el alcance del experimento.
-
-## Rol de TDD en el proyecto
-
-TDD será utilizado como práctica principal para el desarrollo de lógica interna, servicios, reglas del dominio y componentes críticos del backend. Su propósito en este proyecto es mejorar diseño, favorecer desacoplamiento, aumentar testeabilidad y reducir regresiones durante la implementación.
-
-En este contexto, TDD se aplicará especialmente sobre:
-
-- validaciones del flujo;
-- reglas de cambio de estado;
-- composición de respuestas funcionales;
-- consistencia de servicios de aplicación;
-- y módulos con impacto directo sobre el comportamiento principal del sistema.
-
-## Rol de BDD en el proyecto
-
-BDD será utilizado como mecanismo para expresar comportamiento esperado de las funcionalidades desde una perspectiva funcional y comprensible. Su propósito en este proyecto no es reemplazar las pruebas unitarias, sino servir como puente entre requisitos, historias de usuario y validación del comportamiento observable.
-
-BDD se apoyará principalmente en:
-
-- historias de usuario definidas en `02-definicion-funcional.md`;
-- criterios de aceptación verificables;
-- escenarios tipo Given/When/Then cuando aporten claridad real;
-- y trazabilidad con el comportamiento que luego será respaldado por pruebas técnicas.
-
-## Principios rectores de la estrategia de pruebas
-
-La estrategia de pruebas del proyecto se regirá por los siguientes principios:
-
-- La validación debe concentrarse primero en lo más crítico para el problema principal.
-- Deben existir más pruebas unitarias que pruebas de integración, y muchas menos pruebas de extremo a extremo.
-- La cobertura es una métrica de apoyo, no una prueba automática de calidad por sí sola.
-- Los mocks deben usarse para aislar dependencias, no para esconder defectos de diseño.
-- Toda prueba importante debe poder rastrearse a una necesidad funcional o técnica real.
-- La suite de pruebas debe favorecer feedback rápido y confianza sostenida.
-- Las pruebas deben ayudar a diseñar mejor el sistema, no solo a verificarlo al final.
-
-
-## Niveles de prueba del proyecto
-
-La estrategia de validación del proyecto se organizará en niveles de prueba complementarios, con prioridad en pruebas unitarias y de integración, y con uso muy limitado de pruebas amplias de flujo completo.
-
-### 1. Pruebas unitarias
-
-Las pruebas unitarias constituirán la base principal de la estrategia. Su función será validar lógica de negocio, reglas de aplicación, validaciones, transformaciones y comportamiento interno de componentes críticos en aislamiento controlado.
-
-Estas pruebas deberán ser:
-
-- rápidas;
-- deterministas;
-- independientes entre sí;
-- fáciles de ejecutar de forma frecuente;
-- y centradas en una sola responsabilidad por caso.
-
-### 2. Pruebas de integración
-
-Las pruebas de integración se utilizarán para validar la interacción entre componentes relevantes del sistema, especialmente en relación con persistencia SQL local, repositorios, servicios de aplicación y contratos internos del backend.
-
-Estas pruebas deberán verificar, al menos, que:
-
-- la persistencia funciona de forma coherente;
-- los módulos principales cooperan correctamente;
-- los flujos críticos pueden ejecutarse con datos reales o casi reales;
-- y las interfaces entre capas no rompen el comportamiento esperado.
-
-### 3. Pruebas funcionales orientadas a criterios de aceptación
-
-Las pruebas funcionales se utilizarán para validar que historias y criterios de aceptación se expresan de forma comprobable. En esta etapa no se busca una automatización exhaustiva de interfaz, sino una validación clara de comportamiento observable, principalmente desde backend o mediante escenarios controlados.
-
-### 4. Pruebas amplias o de flujo completo
-
-Las pruebas de flujo completo no serán el foco principal del experimento. Solo se utilizarán de forma muy limitada para verificar recorridos esenciales del sistema cuando aporten confianza adicional sin introducir una carga desproporcionada de mantenimiento.
-
-## Distribución esperada del esfuerzo de pruebas
-
-La distribución esperada del esfuerzo seguirá una lógica de pirámide de pruebas:
-
-- mayoría de pruebas unitarias;
-- menor cantidad de pruebas de integración;
-- y muy pocas pruebas amplias de flujo completo.
-
-Esta distribución se adopta para mantener retroalimentación rápida, reducir fragilidad innecesaria y concentrar el mayor volumen de validación en las capas donde el experimento obtiene más valor técnico.
-
-## Política de mocks y dobles de prueba
-
-Los mocks y dobles de prueba se utilizarán de forma controlada y deliberada. Su propósito será aislar dependencias externas o componentes secundarios cuando ello permita validar mejor una unidad concreta sin introducir inestabilidad o lentitud artificial.
-
-### Uso permitido de mocks
-
-Se permitirá el uso de mocks principalmente para:
-
-- aislar servicios o colaboradores no esenciales a la unidad probada;
-- evitar dependencias externas en pruebas unitarias;
-- verificar interacciones relevantes entre componentes cuando corresponda;
-- simular respuestas de módulos que no forman parte directa del comportamiento que se desea validar;
-- y controlar condiciones excepcionales difíciles de reproducir con precisión en una prueba unitaria.
-
-### Uso restringido de mocks
-
-No deberán utilizarse mocks para:
-
-- reemplazar sistemáticamente la persistencia en pruebas que deban validar integración real;
-- ocultar deficiencias de diseño o dependencias excesivas;
-- simular de forma innecesaria comportamiento que puede validarse con componentes reales de bajo costo;
-- o inflar artificialmente cobertura sin comprobar comportamiento real.
-
-## Meta de cobertura de código
-
-La cobertura de código se utilizará como señal auxiliar de salud de pruebas y no como único objetivo de calidad. No obstante, para este experimento se establece una meta explícita alta en los módulos críticos del backend.
-
-### Objetivo de cobertura
-
-- Módulos críticos de backend: entre 90% y 95% de cobertura objetivo.
-- Componentes menos críticos o auxiliares: cobertura suficiente según valor real del componente.
-- Funcionalidades de seguridad, validación o manejo sensible de datos: prioridad de cobertura reforzada.
-
-La cobertura deberá observarse principalmente sobre:
-
-- servicios de aplicación;
-- validaciones;
-- reglas de estado;
-- orquestación del flujo principal;
-- y transformaciones críticas del comportamiento esperado.
-
-### Interpretación de la cobertura
-
-Una cobertura alta se considerará valiosa solo si está asociada a pruebas significativas. No se considerará suficiente ejecutar líneas de código sin verificar comportamiento, bordes, errores y decisiones relevantes del flujo.
-
-Por ello, la cobertura se analizará junto con:
-
-- calidad de aserciones;
-- variedad de escenarios;
-- casos límite;
-- manejo de errores;
-- y coherencia con requisitos e historias de usuario.
-
-## Separación operativa de suites de prueba
-
-Las pruebas deberán poder separarse operativamente por tipo para facilitar ejecución rápida, depuración y uso dentro del flujo de desarrollo.
-
-Como criterio general:
-
-- las pruebas unitarias deben ejecutarse primero y con mayor frecuencia;
-- las pruebas de integración deben poder ejecutarse por separado;
-- y las pruebas amplias deben reservarse para momentos específicos de validación.
-
-Esta separación busca mantener velocidad de feedback durante desarrollo por CLI y evitar que el costo total de validación vuelva lento el ciclo principal de trabajo.
-
-## Trazabilidad entre requisitos, historias y pruebas
-
-La estrategia de pruebas deberá mantener una trazabilidad ligera pero suficiente entre el origen funcional del sistema y su validación técnica. No se construirá una matriz documental excesiva en esta etapa, pero sí una relación explícita entre requisito, historia, criterio de aceptación y evidencia de prueba.
-
-La lógica mínima de trazabilidad será la siguiente:
-
-- problema o necesidad identificada;
-- requisito funcional o no funcional asociado;
-- historia de usuario correspondiente;
-- criterio de aceptación verificable;
-- tipo de prueba aplicable;
-- evidencia o resultado obtenido.
-
-Esta relación permitirá verificar que las pruebas no existan aisladas del propósito del sistema y que cada funcionalidad crítica cuente con respaldo observable de validación.
-
-## Identificación mínima de pruebas
-
-Cada prueba importante del proyecto deberá poder asociarse, como mínimo, a uno de los siguientes orígenes:
-
-- un requisito funcional;
-- un requisito no funcional;
-- una historia de usuario;
-- un criterio de aceptación;
-- o una decisión técnica crítica del diseño del sistema.
-
-No se considera aceptable construir suites extensas de pruebas sin vínculo claro con una necesidad real del sistema, salvo en los casos de utilidades técnicas generales claramente justificadas.
-
-## Evidencias esperadas de validación
-
-La validación del experimento deberá producir evidencia suficiente para demostrar no solo que se ejecutaron pruebas, sino que los resultados son interpretables y útiles para tomar decisiones.
-
-Se consideran evidencias mínimas esperadas:
-
-- resultados de ejecución de pruebas unitarias;
-- resultados de ejecución de pruebas de integración;
-- reporte de cobertura de código;
-- registro de pruebas fallidas y corregidas cuando corresponda;
-- evidencia de validación de flujos críticos;
-- y observaciones relevantes sobre límites, riesgos o comportamientos detectados.
-
-Cuando sea posible, estas evidencias deberán conservarse en formatos simples y fáciles de revisar dentro del entorno de desarrollo o del repositorio del proyecto.
-
-## Definition of Done de pruebas
-
-Una funcionalidad o incremento validado solo podrá considerarse suficientemente probado cuando cumpla, como mínimo, las siguientes condiciones:
-
-- existe relación identificable con una necesidad funcional o técnica real;
-- cuenta con pruebas adecuadas al nivel de riesgo del componente;
-- las pruebas relevantes ejecutan y pasan de forma consistente;
-- los criterios de aceptación aplicables han sido cubiertos de manera verificable;
-- la cobertura objetivo del módulo crítico no se degrada sin justificación;
-- los errores conocidos no bloquean el comportamiento principal del flujo;
-- y la evidencia de validación está disponible para revisión.
-
-Una funcionalidad no se considerará suficientemente validada solo porque compile, se ejecute una vez o muestre comportamiento aparentemente correcto en una prueba manual aislada.
-
-## Riesgos principales de validación
-
-La estrategia reconoce desde el inicio los siguientes riesgos principales:
-
-- uso excesivo de mocks que reduzca realismo de validación;
-- cobertura alta con pruebas débiles o poco significativas;
-- pruebas lentas que deterioren el ciclo de feedback del desarrollo;
-- acoplamiento excesivo entre pruebas e implementación interna;
-- ambigüedad funcional que impida verificar criterios de aceptación;
-- dependencia excesiva de validación manual no reproducible;
-- y fragilidad de pruebas de integración si el entorno local no está bien controlado.
-
-Estos riesgos deberán observarse durante la implementación y revisarse de forma retrospectiva para ajustar la estrategia cuando sea necesario.
-
-## Criterio de transición hacia trazabilidad ligera
-
-El proyecto podrá avanzar desde `04-estrategia-pruebas.md` hacia `05-trazabilidad-ligera.md` cuando la estrategia ya permita responder con claridad qué se probará, cómo se probará, con qué nivel de profundidad y con qué evidencia mínima se considerará aceptable la validación.
-
-La transición será válida si se cumplen al menos las siguientes condiciones:
-
-- la estrategia de pruebas está definida;
-- los niveles de prueba están claros;
-- la política de mocks está delimitada;
-- existe un objetivo explícito de cobertura;
-- la noción de evidencia ya está establecida;
-- y la relación entre funcionalidad y validación puede expresarse de manera trazable.
-
-## Cierre de la estrategia de pruebas
-
-Con la información registrada en este documento, el proyecto cuenta con una estrategia de pruebas suficientemente definida para sostener la implementación y la validación del experimento. Se dispone de propósito, alcance, enfoque TDD-BDD, niveles de prueba, política de mocks, meta de cobertura, criterios de evidencia y definición básica de cierre de calidad.
-
-En consecuencia, se considera razonable cerrar esta capa documental y utilizar este archivo como base para la construcción de una trazabilidad ligera, práctica y útil para el flujo real del proyecto.
-
-# Trazabilidad ligera
+<!--toc:start-->
+
+- [Propósito del documento](#propósito-del-documento)
+- [Alcance de la estrategia de pruebas](#alcance-de-la-estrategia-de-pruebas)
+- [Rol de TDD en el proyecto](#rol-de-tdd-en-el-proyecto)
+- [Rol de BDD en el proyecto](#rol-de-bdd-en-el-proyecto)
+- [Principios rectores de la estrategia de pruebas](#principios-rectores-de-la-estrategia-de-pruebas)
+- [Niveles de prueba del proyecto](#niveles-de-prueba-del-proyecto)
+  - [1. Pruebas unitarias](#1-pruebas-unitarias)
+  - [2. Pruebas de integración](#2-pruebas-de-integración)
+  - [3. Pruebas funcionales orientadas a criterios de aceptación](#3-pruebas-funcionales-orientadas-a-criterios-de-aceptación)
+  - [4. Pruebas amplias o de flujo completo](#4-pruebas-amplias-o-de-flujo-completo)
+- [Distribución esperada del esfuerzo de pruebas](#distribución-esperada-del-esfuerzo-de-pruebas)
+- [Política de mocks y dobles de prueba](#política-de-mocks-y-dobles-de-prueba)
+  - [Uso permitido de mocks](#uso-permitido-de-mocks)
+  - [Uso restringido de mocks](#uso-restringido-de-mocks)
+- [Meta de cobertura de código](#meta-de-cobertura-de-código)
+  - [Objetivo de cobertura](#objetivo-de-cobertura)
+  - [Interpretación de la cobertura](#interpretación-de-la-cobertura)
+- [Separación operativa de suites de prueba](#separación-operativa-de-suites-de-prueba)
+- [Trazabilidad entre requisitos, historias y pruebas](#trazabilidad-entre-requisitos-historias-y-pruebas)
+- [Identificación mínima de pruebas](#identificación-mínima-de-pruebas)
+- [Evidencias esperadas de validación](#evidencias-esperadas-de-validación)
+- [Definition of Done de pruebas](#definition-of-done-de-pruebas)
+- [Riesgos principales de validación](#riesgos-principales-de-validación)
+- [Criterio de transición hacia trazabilidad ligera](#criterio-de-transición-hacia-trazabilidad-ligera)
+- [Cierre de la estrategia de pruebas](#cierre-de-la-estrategia-de-pruebas)
+- [Trazabilidad ligera](#trazabilidad-ligera)
+  - [Propósito del documento](#propósito-del-documento-1)
+  - [Alcance de la trazabilidad](#alcance-de-la-trazabilidad)
+  - [Principio rector de ligereza](#principio-rector-de-ligereza)
+  - [Modelo mínimo de trazabilidad](#modelo-mínimo-de-trazabilidad)
+  - [Regla de bidireccionalidad mínima](#regla-de-bidireccionalidad-mínima)
+  - [Sistema de identificadores mínimos](#sistema-de-identificadores-mínimos)
+  - [Regla de mantenimiento práctico](#regla-de-mantenimiento-práctico)
+  - [Estructura mínima de trazabilidad](#estructura-mínima-de-trazabilidad)
+  - [Tabla base de relaciones](#tabla-base-de-relaciones)
+  - [Plantilla mínima por fila de trazabilidad](#plantilla-mínima-por-fila-de-trazabilidad)
+  - [Reglas de actualización](#reglas-de-actualización)
+  - [Reglas de enlace entre artefactos](#reglas-de-enlace-entre-artefactos)
+  - [Ejemplo mínimo de trazabilidad aplicada](#ejemplo-mínimo-de-trazabilidad-aplicada)
+  - [Formato práctico de mantenimiento](#formato-práctico-de-mantenimiento)
+  - [Revisión periódica de la trazabilidad](#revisión-periódica-de-la-trazabilidad)
+  - [Riesgos de degradación de la trazabilidad](#riesgos-de-degradación-de-la-trazabilidad)
+  - [Reglas de corrección ante desalineación](#reglas-de-corrección-ante-desalineación)
+  - [Definition of Done de trazabilidad ligera](#definition-of-done-de-trazabilidad-ligera)
+  - [Criterio de suficiencia para el experimento](#criterio-de-suficiencia-para-el-experimento)
+  - [Transición hacia la siguiente capa](#transición-hacia-la-siguiente-capa)
+  - [Cierre del documento](#cierre-del-documento)
+  - [Sub-experimento: pruebas de integración con Testcontainers (PostgreSQL)](#sub-experimento-pruebas-de-integración-con-testcontainers-postgresql) - [Propósito](#propósito) - [Hipótesis evaluada](#hipótesis-evaluada) - [Resultado: hipótesis confirmada](#resultado-hipótesis-confirmada) - [Hallazgos técnicos](#hallazgos-técnicos) - [Decisión de alcance: suite Postgres queda como complemento permanente](#decisión-de-alcance-suite-postgres-queda-como-complemento-permanente) - [Pendiente — explícitamente abierto, no resuelto en este sub-experimento](#pendiente-explícitamente-abierto-no-resuelto-en-este-sub-experimento)
+  <!--toc:end-->
 
 ## Propósito del documento
 
@@ -362,11 +154,11 @@ La tabla deberá permitir responder, de manera rápida, al menos estas preguntas
 
 La trazabilidad principal podrá mantenerse con la siguiente estructura mínima:
 
-| ID origen | Tipo | Descripción breve | Relación principal | Artefacto asociado | Prueba asociada | Evidencia | Estado |
-|----------|------|-------------------|--------------------|--------------------|-----------------|-----------|--------|
-| RF-01 | Requisito funcional | Registrar consulta inicial | HU-01 | DS-01 | TP-01 | EV-01 | Vigente |
-| HU-01 | Historia de usuario | Registrar una consulta inicial | CA-01, CA-02 | DS-01 | TP-01, TP-02 | EV-01 | Vigente |
-| RF-06 | Requisito funcional | Consultar disponibilidad de repuesto | HU-04 | DS-03 | TP-08 | EV-05 | Vigente |
+| ID origen | Tipo                | Descripción breve                    | Relación principal | Artefacto asociado | Prueba asociada | Evidencia | Estado  |
+| --------- | ------------------- | ------------------------------------ | ------------------ | ------------------ | --------------- | --------- | ------- |
+| RF-01     | Requisito funcional | Registrar consulta inicial           | HU-01              | DS-01              | TP-01           | EV-01     | Vigente |
+| HU-01     | Historia de usuario | Registrar una consulta inicial       | CA-01, CA-02       | DS-01              | TP-01, TP-02    | EV-01     | Vigente |
+| RF-06     | Requisito funcional | Consultar disponibilidad de repuesto | HU-04              | DS-03              | TP-08           | EV-05     | Vigente |
 
 Esta tabla es intencionalmente compacta. Su propósito no es capturar todo el detalle, sino ofrecer una visión práctica y cruzada del estado de cobertura funcional y técnica.
 
@@ -446,7 +238,6 @@ La preferencia del proyecto será mantener una trazabilidad:
 - editable por texto plano;
 - fácil de revisar en Git;
 - y suficientemente compacta como para ser utilizada también por herramientas asistidas por IA sin sobrecarga excesiva de contexto.
-
 
 ## Revisión periódica de la trazabilidad
 
@@ -530,3 +321,66 @@ La transición será válida si se cumplen al menos las siguientes condiciones:
 Con la información registrada en este archivo, el proyecto cuenta con un modelo de trazabilidad ligera suficiente para mantener visibilidad sobre el origen, desarrollo y validación de sus elementos principales. Se dispone de propósito, alcance, principios, identificadores, estructura de tabla, reglas de relación, revisión periódica, riesgos de degradación y criterio de suficiencia.
 
 En consecuencia, se considera razonable cerrar `05-trazabilidad-ligera.md` como documento base de control documental liviano para el experimento.
+
+## Sub-experimento: pruebas de integración con Testcontainers (PostgreSQL)
+
+### Propósito
+
+Esta sección registra el cierre de un sub-experimento acotado dentro de la
+estrategia de pruebas: validar si las pruebas de integración del módulo de
+persistencia ganan realismo al ejecutarse contra PostgreSQL real en
+contenedor (vía Testcontainers), sin degradar la suite SQLite existente ni
+el ciclo de feedback del desarrollo.
+
+### Hipótesis evaluada
+
+Si las pruebas de integración se ejecutan contra PostgreSQL real además de
+SQLite, entonces aumenta el realismo de validación sin romper la suite
+existente ni introducir fricción operativa inaceptable.
+
+### Resultado: hipótesis confirmada
+
+- Suite SQLite original: 124 tests, 0 fallos, 96.15% cobertura — sin cambios.
+- Suite PostgreSQL nueva (aislada, `tests/integration_postgres/`): 19 tests,
+  0 fallos, ~7s de ejecución incluyendo arranque/destrucción de contenedor.
+- Suite combinada: 143 tests, 0 fallos, 98.93% cobertura.
+- Aislamiento de puertos verificado: Testcontainers usa mapeo aleatorio de
+  puerto del host, sin colisión con servicios fijos de otros proyectos
+  locales (ej. Postgres en 5432 de otro repositorio en la misma máquina).
+- La suite PostgreSQL no se ejecuta por defecto (excluida de `testpaths` en
+  `pytest.ini`), preservando la velocidad del ciclo diario de pruebas.
+
+### Hallazgos técnicos
+
+- El esquema DDL de persistencia es 100% portable entre SQLite y PostgreSQL
+  sin modificación.
+- Las diferencias reales están en la capa de adaptador/driver, no en el
+  esquema: marcadores de parámetro (`?` vs `%s`) y forma de acceso a filas
+  (`sqlite3.Row` por nombre vs tuplas posicionales de `psycopg2`).
+- El aislamiento entre pruebas se logró con `TRUNCATE ... CASCADE` sobre un
+  contenedor persistente a nivel de módulo, en lugar de recrear la base en
+  cada test (estrategia distinta a SQLite, justificada por costo de arranque
+  del contenedor).
+
+### Decisión de alcance: suite Postgres queda como complemento permanente
+
+La suite `tests/integration_postgres/` se conserva como capa adicional de
+validación de paridad de motor, ejecutable de forma manual o en CI cuando
+se decida, sin sustituir ni alterar la suite SQLite que sigue siendo la
+validación principal del flujo diario.
+
+### Pendiente — explícitamente abierto, no resuelto en este sub-experimento
+
+**OBS-TC-001 — Decisión de motor de persistencia en producción.**
+No se decide en este punto si producción migra de SQLite a PostgreSQL.
+Esta es una decisión de arquitectura (afecta `04-diseno-y-arquitectura.md`)
+y debe tratarse en una sesión propia, con su propio plan y validación,
+no como extensión de este sub-experimento. Si en el futuro se aprueba
+explorar soporte multi-motor, el primer paso técnico identificado es
+introducir una interfaz común (`Protocol` o `ABC`) para los repositorios,
+evitando mantener dos implementaciones divergentes de la misma lógica de
+persistencia.
+
+**Estado:** cerrado como sub-experimento de pruebas. Pendiente de decisión
+de producto/arquitectura registrado como OBS-TC-001.
+

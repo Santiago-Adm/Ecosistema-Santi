@@ -3,8 +3,6 @@
 import json
 import logging
 
-import pytest
-
 from ecosistema_santi.logging_config import _JSONFormatter, get_logger
 
 
@@ -23,9 +21,13 @@ def test_get_logger_idempotente():
 def test_json_formatter_produce_json_valido():
     formatter = _JSONFormatter()
     record = logging.LogRecord(
-        name="test", level=logging.INFO,
-        pathname="", lineno=0, msg="evento_prueba",
-        args=(), exc_info=None,
+        name="test",
+        level=logging.INFO,
+        pathname="",
+        lineno=0,
+        msg="evento_prueba",
+        args=(),
+        exc_info=None,
     )
     salida = formatter.format(record)
     datos = json.loads(salida)
@@ -38,9 +40,13 @@ def test_json_formatter_produce_json_valido():
 def test_json_formatter_incluye_extra():
     formatter = _JSONFormatter()
     record = logging.LogRecord(
-        name="test", level=logging.WARNING,
-        pathname="", lineno=0, msg="alerta",
-        args=(), exc_info=None,
+        name="test",
+        level=logging.WARNING,
+        pathname="",
+        lineno=0,
+        msg="alerta",
+        args=(),
+        exc_info=None,
     )
     record.consulta_id = "id-123"
     record.estado = "pendiente"
@@ -53,9 +59,13 @@ def test_json_formatter_incluye_extra():
 def test_json_formatter_nivel_warning():
     formatter = _JSONFormatter()
     record = logging.LogRecord(
-        name="test", level=logging.WARNING,
-        pathname="", lineno=0, msg="advertencia",
-        args=(), exc_info=None,
+        name="test",
+        level=logging.WARNING,
+        pathname="",
+        lineno=0,
+        msg="advertencia",
+        args=(),
+        exc_info=None,
     )
     salida = formatter.format(record)
     datos = json.loads(salida)
@@ -67,3 +77,42 @@ def test_logger_captura_con_caplog(caplog):
         logger = get_logger("services.test_cap")
         logger.info("evento_capturado", extra={"clave": "valor"})
     assert any("evento_capturado" in r.message for r in caplog.records)
+
+
+def test_json_formatter_incluye_excepcion():
+    formatter = _JSONFormatter()
+    try:
+        raise ValueError("error de prueba")
+    except ValueError:
+        import sys
+
+        exc_info = sys.exc_info()
+
+    record = logging.LogRecord(
+        name="test",
+        level=logging.ERROR,
+        pathname="",
+        lineno=0,
+        msg="error ocurrido",
+        args=(),
+        exc_info=exc_info,
+    )
+    salida = formatter.format(record)
+    datos = json.loads(salida)
+    assert datos["level"] == "ERROR"
+    assert datos["msg"] == "error ocurrido"
+    assert "exc" in datos
+    assert "ValueError: error de prueba" in datos["exc"]
+
+
+def test_configurar_handler_si_no_existe_crea_handler():
+    old_root_handlers = list(logging.root.handlers)
+    logging.root.handlers = []
+    try:
+        logger = get_logger("logger_sin_handlers_de_prueba")
+        assert len(logger.handlers) == 1
+        assert isinstance(logger.handlers[0], logging.StreamHandler)
+        assert isinstance(logger.handlers[0].formatter, _JSONFormatter)
+        assert logger.propagate is False
+    finally:
+        logging.root.handlers = old_root_handlers
